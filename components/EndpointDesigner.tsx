@@ -54,20 +54,22 @@ const labelCls = "mb-1 block text-xs font-medium uppercase tracking-wide text-zi
 export default function EndpointDesigner({ endpoints, onSave, onDelete, onToggle }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<MockEndpoint | null>(null);
+  const [isNew, setIsNew] = useState(false);
   const [headersText, setHeadersText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // keep selection valid when the list changes
+  // keep selection valid when the list changes (skip while editing a not-yet-saved new endpoint)
   useEffect(() => {
-    if (selectedId && !endpoints.some((e) => e.id === selectedId)) {
+    if (selectedId && !isNew && !endpoints.some((e) => e.id === selectedId)) {
       setSelectedId(null);
       setDraft(null);
     }
-  }, [endpoints, selectedId]);
+  }, [endpoints, selectedId, isNew]);
 
   const select = (ep: MockEndpoint) => {
     setSelectedId(ep.id);
+    setIsNew(false);
     setDraft({ ...ep, headers: { ...ep.headers } });
     setHeadersText(headersToText(ep.headers));
     setError(null);
@@ -77,6 +79,7 @@ export default function EndpointDesigner({ endpoints, onSave, onDelete, onToggle
   const startNew = () => {
     const ep = blankEndpoint();
     setSelectedId(ep.id);
+    setIsNew(true);
     setDraft(ep);
     setHeadersText("");
     setError(null);
@@ -107,6 +110,7 @@ export default function EndpointDesigner({ endpoints, onSave, onDelete, onToggle
     await onSave({ ...draft, headers: textToHeaders(headersText) });
     setSelectedId(null);
     setDraft(null);
+    setIsNew(false);
   };
 
   const copySnippet = async () => {
@@ -313,6 +317,7 @@ export default function EndpointDesigner({ endpoints, onSave, onDelete, onToggle
                 onClick={() => {
                   setDraft(null);
                   setSelectedId(null);
+                  setIsNew(false);
                 }}
                 className="rounded-lg px-4 py-2 text-sm text-zinc-500 transition hover:text-zinc-300"
               >
