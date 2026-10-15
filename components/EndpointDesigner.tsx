@@ -101,7 +101,8 @@ export default function EndpointDesigner({ endpoints, onSave, onDelete, onToggle
       return;
     }
     try {
-      if (draft.body.trim()) JSON.parse(draft.body.replace(/\{\{[^}]+\}\}/g, '"x"'));
+      // Strip {{…}} placeholders (quoted or bare) before JSON validation.
+      if (draft.body.trim()) JSON.parse(draft.body.replace(/"?\{\{[^}]+\}\}"?/g, '"x"'));
     } catch {
       setError("Body is not valid JSON (after ignoring {{…}} placeholders).");
       return;
