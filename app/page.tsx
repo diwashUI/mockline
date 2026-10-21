@@ -76,6 +76,14 @@ const user = await res.json();
       <footer className="border-t border-zinc-900 py-8 text-center text-xs text-zinc-600">
         Mockline — mock endpoints, request log, and test console, all client-side. Your mocks never
         leave this browser.
+        <br />
+        <span className="mt-2 inline-block">
+          More free tools:{" "}
+          <a href="https://privatepdfapp.vercel.app" className="underline hover:text-zinc-400">
+            PrivatePDF
+          </a>{" "}
+          — PDF tools that never upload your files.
+        </span>
       </footer>
     </div>
   );
